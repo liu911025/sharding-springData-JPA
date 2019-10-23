@@ -12,6 +12,7 @@ import com.cxytiandi.sharding.po.User;
 import com.cxytiandi.sharding.service.UserService;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -40,6 +41,7 @@ public class UserController {
 			user.setId(nextId);*/
 			user.setCity("深圳" + id);
 			user.setName("李四" + id);
+			user.setAddTime(new Date());
 			users.add(user);
 		}
 		userService.addAll(users);
@@ -50,13 +52,14 @@ public class UserController {
 	public Object add() {
 		/*SnowflakeIdWorker2 idWorker = new SnowflakeIdWorker2(0, 0);
 		long nextId = idWorker.nextId();*/
-		Long nextId = SnowflakeIdWorker.generateId();
+		/*Long nextId = SnowflakeIdWorker.generateId();
 		System.out.println("nextId: " + nextId);
-		System.out.println("nextId % 5: " + nextId % 5);
+		System.out.println("nextId % 5: " + nextId % 5);*/
 		User user = new User();
-		user.setId(nextId);
+		//user.setId(nextId);
 		user.setCity("深圳");
 		user.setName("李四");
+		user.setAddTime(new Date());
 		userService.add(user);
 		return "success";
 	}

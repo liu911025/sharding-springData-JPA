@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 分表
@@ -23,5 +24,7 @@ public class User implements Serializable {
 	private String city = "";
 	
 	private String name = "";
+
+	private Date addTime;
 	
 }

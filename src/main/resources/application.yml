@@ -23,11 +23,20 @@ spring:
       tables:
         user:
           actualDataNodes: master.user_$->{0..4}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
           # 自定义分表算法
           tableStrategy:
             standard:
-              shardingColumn: id
+              shardingColumn: add_time
               preciseAlgorithmClassName: com.cxytiandi.sharding.algorithm.MyPreciseShardingAlgorithm
+              rangeAlgorithmClassName: com.cxytiandi.sharding.algorithm.MsgHistoryRangeShardingAlgorithm
+
+
+
+
+
 
 # inline 表达式
 #spring.shardingsphere.sharding.tables.user.table-strategy.inline.sharding-column=id
@@ -38,5 +47,5 @@ spring:
 #数据中心
 idWorker:
   datacenterId: 1
-#机器标识
+  #机器标识
   machineId: 1
