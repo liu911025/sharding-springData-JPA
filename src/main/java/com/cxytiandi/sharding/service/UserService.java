@@ -10,7 +10,7 @@ public interface UserService {
 	
 	void add(User user);
 
-	void addAll(List<User> users);
+	void addAll();
 
 	User findById(Long id);
 	

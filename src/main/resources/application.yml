@@ -6,46 +6,45 @@ spring:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: create-drop
+      ddl-auto: update
 
   shardingsphere:
     datasource:
-      names: master
+      names: ds0,ds1
       # 数据源
-      master:
+      ds0:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
-        url: jdbc:mysql://localhost:3306/ds_0?characterEncoding=utf-8
+        url: jdbc:mysql://localhost:3306/ds0?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+        username: root
+        password: root
+      ds1:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/ds1?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
         username: root
         password: root
     # 分表配置
     sharding:
       tables:
         user:
-          actualDataNodes: master.user_$->{0..4}
+          actualDataNodes: ds$->{0..1}.user_$->{0..4}
+          database-strategy:
+            inline:
+              sharding-column: id
+              algorithm-expression: ds$->{id % 2}
           key-generator:
             column: id
             type: SNOWFLAKE
           # 自定义分表算法
           tableStrategy:
-            standard:
-              shardingColumn: add_time
-              preciseAlgorithmClassName: com.cxytiandi.sharding.algorithm.MyPreciseShardingAlgorithm
-              rangeAlgorithmClassName: com.cxytiandi.sharding.algorithm.MsgHistoryRangeShardingAlgorithm
-
-
-
-
-
+            inline:
+              sharding-column: id
+              algorithm-expression: user_$->{id % 5}
+      default-data-source-name: ds0
+    props:
+      sql.show: true
 
 # inline 表达式
 #spring.shardingsphere.sharding.tables.user.table-strategy.inline.sharding-column=id
 #spring.shardingsphere.sharding.tables.user.table-strategy.inline.algorithm-expression=user_${id.longValue() % 4}
-
-# 雪花算法
-# 用在分布式系统中时，需要注意数据中心标识和机器标识必须唯一，这样就能保证每个节点生成的ID都是唯一的。
-#数据中心
-idWorker:
-  datacenterId: 1
-  #机器标识
-  machineId: 1

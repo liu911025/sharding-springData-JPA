@@ -1,8 +1,5 @@
 package com.cxytiandi.sharding.controller;
 
-import com.cxytiandi.sharding.util.IdWorker;
-import com.cxytiandi.sharding.util.SnowflakeIdWorker;
-import com.cxytiandi.sharding.util.SnowflakeIdWorker2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,8 +17,6 @@ public class UserController {
 	
 	@Autowired
 	private UserService userService;
-	@Autowired
-	private IdWorker idWorker;
 	
 	@GetMapping("/users")
 	public Object list() {
@@ -30,21 +25,7 @@ public class UserController {
 	
 	@GetMapping("/addAll")
 	public Object addAll() {
-		List<User> users = new ArrayList<>();
-		for (long i = 0; i < 100; i++) {
-			User user = new User();
-			long id = i + 1;
-			//user.setId(id);
-			/*long nextId = SnowflakeIdWorker.generateId();
-			System.out.println("nextId: " + nextId);
-			System.out.println("nextId % 4: " + nextId % 4);
-			user.setId(nextId);*/
-			user.setCity("深圳" + id);
-			user.setName("李四" + id);
-			user.setAddTime(new Date());
-			users.add(user);
-		}
-		userService.addAll(users);
+		userService.addAll();
 		return "success";
 	}
 
