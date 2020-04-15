@@ -1,0 +1,128 @@
+server:
+  port: 8810
+spring:
+  application:
+    name: medisign-patient-api
+  shardingsphere:
+    datasource:
+      names: yxq-patient202003,yxq-patient202004
+      yxq-patient202003:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/yxq-patient202003?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+        username: root
+        password: root
+        maxPoolSize: 50
+        minPoolSize: 1
+      yxq-patient202004:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driver-class: com.mysql.jdbc.Driver
+        url: jdbc:mysql://localhost:3306/yxq-patient202004?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT%2B8
+        username: root
+        password: root
+        maxPoolSize: 50
+        minPoolSize: 1
+    sharding:
+      tables:
+        # 文件表
+        tb_sign_file:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_sign_file
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          # table-strategy:
+          #   inline:
+          #     sharding-column: id
+          #     algorithm-expression: tb_sign_file$->{id % 3}
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        # 签署人表
+        tb_signer:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_signer
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        #签署坐标表
+        tb_sign_user_position:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_sign_user_position
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        # 订单表
+        tb_order:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_order
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        #签署数据表
+        tb_sign_data:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_sign_data
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+        #数据保全
+        tb_data_security:
+          actual-data-nodes: yxq-patient$->{202003..202004}.tb_data_security
+          database-strategy:
+            standard:
+              sharding-column: strategy
+              preciseAlgorithmClassName: cn.linksign.medisign.patient.api.config.DatabaseShardingAlgorithm
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+      binding-tables: tb_sign_file,tb_signer,tb_sign_user_position,tb_order,tb_sign_data,tb_data_security
+      default-data-source-name: yxq-patient202004
+      type: SNOWFLAKE
+    props:
+      sql.show: true
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+eureka:
+  instance:
+    prefer-ip-address: true
+  client:
+    service-url:
+      defaultZone: http://localhost:8801/eureka/
+#Ribbon超时时间(ms
+ribbon:
+  ReadTimeout: 10000
+  ConnectTimeout: 3000
+
+file:
+  path: E:\upload\
+  image: ${file.path}image\
+  face-video: ${file.path}face_video
+  #文件过期时间
+  timeOut: 60
+
+wkhtmltopdf: D:\Program Files\wkhtmltopdf\bin\wkhtmltopdf.exe
+
+sign:
+  isSignImageAddTimestamp: false   # 签名图片是否添加时间戳 true添加; false
+  isCaseIdQRCode: 0   # 是否返回住院编号二维码 (0:不返回;  1:返回)
+# 定时器配置
+scheduled:
+  qrCode: false
+  other: true
