@@ -1,12 +1,12 @@
 server:
-  port: 8084
+  port: 9000
 
 spring:
   jpa:
     database: mysql
     show-sql: true
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
 
   shardingsphere:
     datasource:
@@ -48,3 +48,11 @@ spring:
 # inline 表达式
 #spring.shardingsphere.sharding.tables.user.table-strategy.inline.sharding-column=id
 #spring.shardingsphere.sharding.tables.user.table-strategy.inline.algorithm-expression=user_${id.longValue() % 4}
+management:
+  security:
+    enabled: false
+my:
+  config:
+    inline:
+      name: lisi
+      card: 123456

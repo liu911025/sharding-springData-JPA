@@ -1,22 +1,25 @@
 package com.cxytiandi.sharding.controller;
 
+import com.cxytiandi.sharding.config.MySpringBootConfigurationProperties;
+import com.cxytiandi.sharding.po.User;
+import com.cxytiandi.sharding.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.cxytiandi.sharding.po.User;
-import com.cxytiandi.sharding.service.UserService;
-
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 @RestController
 public class UserController {
-	
+
+	@Value("${my.config.inline.name}")
+	private String name;
 	@Autowired
 	private UserService userService;
+	@Autowired
+	private MySpringBootConfigurationProperties config;
 	
 	@GetMapping("/users")
 	public Object list() {
@@ -47,6 +50,8 @@ public class UserController {
 	
 	@GetMapping("/users/{id}")
 	public Object get(@PathVariable Long id) {
+		String card = config.getInline().getCard();
+		String name = config.getInline().getName();
 		return userService.findById(id);
 	}
 	
